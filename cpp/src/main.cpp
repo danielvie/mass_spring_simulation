@@ -1,14 +1,9 @@
-#include <cmath>
-#include <string>
-#include <vector>
 #include "model.h"
-
-Model model;
+#include <memory>
 
 int main() {
-    // State initialState = {0, 0.5, 0, 0};
     
-    // readParameters();
+    std::unique_ptr<Model> model = std::make_unique<Model>();
 
     std::ofstream logFile("states.log");
     if (!logFile.is_open()) {
@@ -17,21 +12,21 @@ int main() {
     }
 
     // Logging the state values
-    State currentState = model.m_initialState;
-    for(double t = 0; t < model.m_t_end; t += model.m_dt) {
-        logFile << t << ","
-            << currentState.x1 << ","
-            << currentState.x2 << ","
-            << currentState.v1 << ","
-            << currentState.v2 << std::endl;
+    while(model->m_t <= model->m_t_end) {
+        logFile << model->m_t << ","
+            << model->m_states.x1 << ","
+            << model->m_states.x2 << ","
+            << model->m_states.v1 << ","
+            << model->m_states.v2 << std::endl;
 
-        currentState = model.rungeKutta(t, currentState);
+        // make a step of simulation
+        model->step();
     }
 
     logFile.close();
 
-    std::cout << "final delta x1: " << currentState.x1 << std::endl;
-    std::cout << "final delta x2: " << currentState.x2 << std::endl;
+    std::cout << "final delta x1: " << model->m_states.x1 << std::endl;
+    std::cout << "final delta x2: " << model->m_states.x2 << std::endl;
 
     return 0;
 }

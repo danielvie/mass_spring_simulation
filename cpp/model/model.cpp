@@ -4,11 +4,19 @@ Model::Model(/* args */)
 {
     std::cout << "model created!\n";
     readParameters();
+    
+    m_states = m_initialState;
+    m_t = 0.0;
 }
 
 Model::~Model()
 {
     std::cout << "model destroyed!\n";
+}
+
+void Model::step() {
+    m_states = rungeKutta(m_t, m_states);
+    m_t += m_dt;
 }
 
 void Model::readParameters() {
