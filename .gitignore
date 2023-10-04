@@ -1,0 +1,7 @@
+*.o
+*.slxc
+*.autosave
+*.mat
+*.DS_Store
+simulink_cache*
+main.exe
