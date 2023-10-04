@@ -5,7 +5,8 @@ Model::Model(/* args */)
     std::cout << "model created!\n";
     readParameters();
 
-    m_pid = std::make_unique<PIDController>(1.0, 0.01, 0.2);
+    // NOTE: controller turned off
+    m_pid = std::make_unique<PIDController>(0.0, 0.0, 0.0);
     
     m_states = m_initialState;
     m_t = 0.0;
