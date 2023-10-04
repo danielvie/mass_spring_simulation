@@ -4,6 +4,8 @@ Model::Model(/* args */)
 {
     std::cout << "model created!\n";
     readParameters();
+
+    m_pid = std::make_unique<PIDController>(1.0, 0.01, 0.2);
     
     m_states = m_initialState;
     m_t = 0.0;
@@ -54,7 +56,11 @@ double Model::F1(double t) {
 // System dynamics
 State Model::systemDynamics(double t, const State& states) {
     double delta = states.x2 - states.x1;
-    double a1 = (-m_k*states.x1 - m_c*states.v1 + m_k*delta + m_c*(states.v2 - states.v1) + F1(t)) / m_M1;
+
+    double ref = 1.0;
+    double F1 = m_pid->compute(ref, states);
+
+    double a1 = (-m_k*states.x1 - m_c*states.v1 + m_k*delta + m_c*(states.v2 - states.v1) + F1) / m_M1;
     double a2 = (-m_k*delta - m_c*(states.v2 - states.v1)) / m_M2;
     
     return {states.v1, states.v2, a1, a2};

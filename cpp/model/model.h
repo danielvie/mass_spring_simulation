@@ -2,14 +2,14 @@
 #include <iostream>
 #include <sstream>
 #include <iostream>
-
-struct State {
-    double x1, x2, v1, v2;
-};
+#include <memory>
+#include "PIDController.h"
+#include "types.h"
 
 class Model
 {
 private:
+    std::unique_ptr<PIDController> m_pid;
 
 
 public:
