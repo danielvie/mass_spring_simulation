@@ -1,20 +1,43 @@
-#include <iostream>
-#include <vector>
 #include <cmath>
 #include <fstream>
-
-const double M1 = 1.0;
-const double M2 = 1.0;
-const double k = 1.0;
-const double c = 0.1;
-const double Amp = 1.0;
-const double omega = 1.0;
-const double dt = 0.01;
-const double t_end = 10.0;
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 struct State {
     double x1, x2, v1, v2;
 };
+
+double M1, M2, k, c, Amp, omega, dt, t_end;
+State initialState;
+
+void readParameters() {
+    std::ifstream paramFile("parameters.txt");
+    if (!paramFile.is_open()) {
+        std::cerr << "Failed to open parameters file." << std::endl;
+        exit(-1);
+    }
+
+    std::string line, varName, equalsSign;
+    while (getline(paramFile, line)) {
+        std::istringstream lineStream(line);
+        lineStream >> varName >> equalsSign;
+        if (varName == "M1") lineStream >> M1;
+        else if (varName == "M2") lineStream >> M2;
+        else if (varName == "k") lineStream >> k;
+        else if (varName == "c") lineStream >> c;
+        else if (varName == "Amp") lineStream >> Amp;
+        else if (varName == "omega") lineStream >> omega;
+        else if (varName == "dt") lineStream >> dt;
+        else if (varName == "t_end") lineStream >> t_end;
+        else if (varName == "x1") lineStream >> initialState.x1;
+        else if (varName == "x2") lineStream >> initialState.x2;
+        else if (varName == "v1") lineStream >> initialState.v1;
+        else if (varName == "v2") lineStream >> initialState.v2;
+    }
+    paramFile.close();
+}
 
 // External force F1
 double F1(double t) {
@@ -46,7 +69,9 @@ State rungeKutta(double t, const State& states) {
 }
 
 int main() {
-    State initialState = {0, 0.5, 0, 0};
+    // State initialState = {0, 0.5, 0, 0};
+    
+    readParameters();
 
     std::ofstream logFile("states.log");
     if (!logFile.is_open()) {
