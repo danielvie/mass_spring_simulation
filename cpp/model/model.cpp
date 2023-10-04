@@ -47,6 +47,7 @@ void Model::readParameters() {
         else if (varName == "kp") lineStream >> m_kp;
         else if (varName == "ki") lineStream >> m_ki;
         else if (varName == "kd") lineStream >> m_kd;
+        else if (varName == "step_time") lineStream >> m_step_time;
     }
     paramFile.close();
 }
@@ -57,6 +58,11 @@ State Model::systemDynamics(double t, const State& states) {
 
     double ref = 1.0;
     double F1 = m_pid->compute(ref, states);
+    
+    // emulate step reference signal
+    if (m_t > m_step_time) {
+        m_pid->enable(true);
+    }
 
     double a1 = (-m_k*states.x1 - m_c*states.v1 + m_k*delta + m_c*(states.v2 - states.v1) + F1) / m_M1;
     double a2 = (-m_k*delta - m_c*(states.v2 - states.v1)) / m_M2;

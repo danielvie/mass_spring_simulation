@@ -9,6 +9,7 @@ private:
     double m_dt;
     double m_prevError; 
     double m_integral;  
+    bool m_on;
 
 public:
 
@@ -17,6 +18,8 @@ public:
 
     // Compute the PID control action
     double compute(double setpoint, const State& states);
+    
+    void enable(bool value);
 };
 
 #endif // PID_CONTROLLER_H
