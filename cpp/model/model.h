@@ -17,6 +17,9 @@ public:
     ~Model();
 
     void readParameters();
+    State systemDynamics(double t, const State& states);
+    State rungeKutta(double t, const State& states);
+    double F1(double t);
     
     double m_M1, m_M2, m_k, m_c, m_Amp, m_omega, m_dt, m_t_end;
     State m_initialState;
