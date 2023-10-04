@@ -13,7 +13,26 @@ A = [0, 1, 0, 0;
 
 B = [0; 1/m1; 0; 0];
 
-C = diag([1,0,1,0]);
+% C = diag([1,0,1,0]);
 C = eye(4);
 
 D = zeros(4,1);
+
+
+% lqr
+Ce = [1, 0, 0, 0];
+
+Ae = [ A, zeros(4,1);
+      -Ce, 0];
+
+Be = [B;0];
+
+Q  = diag([10,200,1,10,10]);
+R  = 1.0;
+
+Klqr  = lqr(Ae, Be, Q, R)
+
+K  = Klqr(1:4);
+Ke = Klqr(5);
+
+sim('model');

@@ -2,7 +2,6 @@
 #include <memory>
 
 int main() {
-    
     Model model;
 
     std::ofstream logFile("states.log");

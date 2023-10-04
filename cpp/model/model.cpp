@@ -5,8 +5,7 @@ Model::Model(/* args */)
     std::cout << "model created!\n";
     readParameters();
 
-    // NOTE: controller turned off
-    m_pid = std::make_unique<PIDController>(0.0, 0.0, 0.0);
+    m_pid = std::make_unique<PIDController>(m_kp, m_ki, m_kd, m_dt);
     
     m_states = m_initialState;
     m_t = 0.0;
@@ -45,13 +44,11 @@ void Model::readParameters() {
         else if (varName == "x2") lineStream >> m_initialState.x2;
         else if (varName == "v1") lineStream >> m_initialState.v1;
         else if (varName == "v2") lineStream >> m_initialState.v2;
+        else if (varName == "kp") lineStream >> m_kp;
+        else if (varName == "ki") lineStream >> m_ki;
+        else if (varName == "kd") lineStream >> m_kd;
     }
     paramFile.close();
-}
-
-// External force F1
-double Model::F1(double t) {
-    return m_Amp * std::sin(m_omega * t)*0;
 }
 
 // System dynamics

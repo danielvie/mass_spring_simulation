@@ -5,13 +5,15 @@
 
 class PIDController {
 private:
-    double m_Kp, m_Ki, m_Kd;     // Proportional, Integral, and Derivative coefficients
-    double m_prevError;          // Error from the previous step for derivative computation
-    double m_integral;           // Accumulated integral of error
+    double m_Kp, m_Ki, m_Kd; 
+    double m_dt;
+    double m_prevError; 
+    double m_integral;  
 
 public:
+
     // Constructor
-    PIDController(double Kp, double Ki, double Kd);
+    PIDController(double Kp, double Ki, double Kd, double dt);
 
     // Compute the PID control action
     double compute(double setpoint, const State& states);
