@@ -4,13 +4,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "model.h"
 
-struct State {
-    double x1, x2, v1, v2;
-};
 
-double M1, M2, k, c, Amp, omega, dt, t_end;
-State initialState;
+Model model;
 
 void readParameters() {
     std::ifstream paramFile("parameters.txt");
@@ -23,29 +20,39 @@ void readParameters() {
     while (getline(paramFile, line)) {
         std::istringstream lineStream(line);
         lineStream >> varName >> equalsSign;
-        if (varName == "M1") lineStream >> M1;
-        else if (varName == "M2") lineStream >> M2;
-        else if (varName == "k") lineStream >> k;
-        else if (varName == "c") lineStream >> c;
-        else if (varName == "Amp") lineStream >> Amp;
-        else if (varName == "omega") lineStream >> omega;
-        else if (varName == "dt") lineStream >> dt;
-        else if (varName == "t_end") lineStream >> t_end;
-        else if (varName == "x1") lineStream >> initialState.x1;
-        else if (varName == "x2") lineStream >> initialState.x2;
-        else if (varName == "v1") lineStream >> initialState.v1;
-        else if (varName == "v2") lineStream >> initialState.v2;
+        if (varName == "M1") lineStream >> model.M1;
+        else if (varName == "M2") lineStream >> model.M2;
+        else if (varName == "k") lineStream >> model.k;
+        else if (varName == "c") lineStream >> model.c;
+        else if (varName == "Amp") lineStream >> model.Amp;
+        else if (varName == "omega") lineStream >> model.omega;
+        else if (varName == "dt") lineStream >> model.dt;
+        else if (varName == "t_end") lineStream >> model.t_end;
+        else if (varName == "x1") lineStream >> model.initialState.x1;
+        else if (varName == "x2") lineStream >> model.initialState.x2;
+        else if (varName == "v1") lineStream >> model.initialState.v1;
+        else if (varName == "v2") lineStream >> model.initialState.v2;
     }
     paramFile.close();
 }
 
 // External force F1
 double F1(double t) {
-    return Amp * std::sin(omega * t)*0;
+    return model.Amp * std::sin(model.omega * t)*0;
 }
 
 // System dynamics
 State systemDynamics(double t, const State& states) {
+    
+    const double M1 = model.M1;
+    const double M2 = model.M2;
+    const double k = model.k;
+    const double c = model.c;
+    const double Amp = model.Amp;
+    const double omega = model.omega;
+    const double dt = model.dt;
+    const double t_end = model.t_end;
+
     double delta = states.x2 - states.x1;
     double a1 = (-k*states.x1 - c*states.v1 + k*delta + c*(states.v2 - states.v1) + F1(t)) / M1;
     double a2 = (-k*delta - c*(states.v2 - states.v1)) / M2;
@@ -55,6 +62,9 @@ State systemDynamics(double t, const State& states) {
 
 // 4th Order Runge-Kutta Integration
 State rungeKutta(double t, const State& states) {
+    
+    const double dt = model.dt;
+
     State k1 = systemDynamics(t, states);
     State k2 = systemDynamics(t + 0.5*dt, {states.x1 + 0.5*dt*k1.x1, states.x2 + 0.5*dt*k1.x2, states.v1 + 0.5*dt*k1.v1, states.v2 + 0.5*dt*k1.v2});
     State k3 = systemDynamics(t + 0.5*dt, {states.x1 + 0.5*dt*k2.x1, states.x2 + 0.5*dt*k2.x2, states.v1 + 0.5*dt*k2.v1, states.v2 + 0.5*dt*k2.v2});
@@ -80,8 +90,8 @@ int main() {
     }
 
     // Logging the state values
-    State currentState = initialState;
-    for(double t = 0; t < t_end; t += dt) {
+    State currentState = model.initialState;
+    for(double t = 0; t < model.t_end; t += model.dt) {
         logFile << t << ","
             << currentState.x1 << ","
             << currentState.x2 << ","

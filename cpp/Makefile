@@ -2,7 +2,7 @@
 CXX           = g++
 CC            = gcc
 
-INCLUDE       = -Isrc -Ilib -Iinclude
+INCLUDE       = -Isrc -Imodel
 DECLARE       = 
 
 CFLAGS       = -O0 -g -Wall ${INCLUDE} ${DECLARE}
@@ -21,26 +21,16 @@ endif
 
 # LENDO ARQUIVOS
 src           = $(wildcard src/*.c*)
-lib           = $(wildcard lib/*.c*)
+model         = $(wildcard model/*.c*)
 
 # AJUSTANDO 'src' E 'obj'
 obj           = $(addsuffix .o,$(basename $(src:src/%=obj/%)))
-obj          += $(addsuffix .o,$(basename $(lib:lib/%=obj/%)))
+obj          += $(addsuffix .o,$(basename $(model:model/%=obj/%)))
 
 # LEIS DE COMPILACAO
 all: r
 
 r: run
-
-p: 
-	@echo -----------------------------
-	@echo ${src}
-	@echo -----------------------------
-	@echo ${obj}
-	@echo -----------------------------
-
-# AJUSTANDO FLAGS 'python'
-lib: ${pyd}
 
 # COMPILACAO 'app {exe}'
 ${app}: ${obj}
@@ -50,7 +40,7 @@ ${app}: ${obj}
 obj/%.o : src/%.cpp
 	$(CXX) ${CXXFLAGS} -o $@ -c $<
 
-obj/%.o : lib/%.cpp
+obj/%.o : model/%.cpp
 	$(CXX) ${CXXFLAGS} -o $@ -c $<
 
 # MONITORANDO ALTERACOES '.h' IMPORTANTES
