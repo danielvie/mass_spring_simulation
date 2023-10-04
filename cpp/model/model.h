@@ -18,7 +18,7 @@ public:
 
     void readParameters();
     
-    double M1, M2, k, c, Amp, omega, dt, t_end;
-    State initialState;
-    State states;
+    double m_M1, m_M2, m_k, m_c, m_Amp, m_omega, m_dt, m_t_end;
+    State m_initialState;
+    State m_states;
 };
