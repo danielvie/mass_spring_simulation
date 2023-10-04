@@ -10,9 +10,9 @@ double PIDController::compute(double setpoint, const State& states) {
     m_integral += error;
     double derivative = states.v1;
 
-    double output = m_Kp * error + m_Ki * m_integral + m_Kd * derivative;
+    double u = m_Kp * error + m_Ki * m_integral + m_Kd * derivative;
 
     m_prevError = error;
 
-    return output;
+    return u;
 }
